@@ -1,2 +1,3 @@
 # Secret-Vault-Backend
-![image](https://user-images.githubusercontent.com/60029463/131046848-b42c04db-72e6-4789-87a7-522cc2eaa3e3.png)
+
+![image](https://user-images.githubusercontent.com/60029463/131047936-61b6ba45-4c97-4623-8143-5490d398c3bc.png)

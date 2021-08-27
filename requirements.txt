@@ -1,1 +1,3 @@
 deta==0.8
+fastapi==0.68.1
+uvicorn==0.15.0
