@@ -1,19 +1,34 @@
 from deta import Deta
+import os
+# from cryptography.fernet import Fernet
 
+
+# we'll input this from user later
+# passphrase = Fernet.generate_key()
 
 class Database:
     def __init__(self, key, db_name):
-        self.key = key
-        self.name = name
-
         deta = Deta(key)
-        db = deta.Base(name)    
-    def add(title, content):
-        db.put({title:content})
+        self.db = deta.Base(db_name)
+        # self.fernet = Fernet(passphrase)
     
-    def fetch(item):
-        item = db.get(item) 
+        self.key = key
+        self.name = db_name
+        # self.db = db
+    
+    def add(self,title, content):
+        # enc = self.fernet.encrypt(content.encode())
+        self.db.put({"key": title, "value" :content})
+    
+    def fetch(self, item):
+        
+        item = self.db.get(item)
+        # pwd = self.fernet.decrypt(item["value"]).decode()
         return item
 
-    def remove(item):
-        db.delete(item)
+    def remove(self,item):
+        self.db.delete(item)
+
+# test = Database(os.environ["DB_KEY"])
+# print(os.environ["DB_KEY"])
+
