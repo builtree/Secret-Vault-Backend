@@ -3,4 +3,5 @@ pydantic==1.8.2
 deta==0.8
 fastapi==0.68.1
 PyJWT==2.1.0
+uvicorn
 gunicorn
