@@ -13,7 +13,8 @@ auth_handler = AuthHandler()
 
 @app.post("/signup")
 async def signup(user : User):
-    user_id = hash(user.username, 'secret')
+    user_id = hash(user.username, os.environ.get('USER_ID_HASH_SECRET'))
+    
     if not user_db.fetch(user_id):
         user.password_hash = auth_handler.get_password_hash(user.password)
         user_db.add(
@@ -29,7 +30,7 @@ async def signup(user : User):
     
 @app.post("/login")
 async def login(user : User):
-    user_id = hash(user.username, 'secret')
+    user_id = hash(user.username, os.environ.get('USER_ID_HASH_SECRET'))
     
     
     try:
