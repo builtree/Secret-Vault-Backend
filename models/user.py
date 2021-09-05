@@ -15,6 +15,7 @@ class User(BaseModel):
     
     id : Optional[str]
     username : str
+    password : str
     password_hash : Optional[str]
     vault_data : Optional[List[UserData]]
     
