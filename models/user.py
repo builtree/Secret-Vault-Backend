@@ -1,6 +1,6 @@
 import os
 import datetime
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from database.database import Database
 from helper.auth import AuthHandler
@@ -13,10 +13,11 @@ class UserData(BaseModel):
 
 class User(BaseModel):
     
-    id : str
+    id : Optional[str]
     username : str
-    password_hash : str
-    vault_data : List[UserData]
+    password : str
+    password_hash : Optional[str]
+    vault_data : Optional[List[UserData]]
     
     
 class UserAuth():
