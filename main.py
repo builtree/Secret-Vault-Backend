@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI
+from starlette.responses import Response
 from database.database import Database
 from helper.hashing import hash
 from helper.auth import AuthHandler
@@ -15,18 +16,23 @@ auth_handler = AuthHandler()
 async def signup(user : User):
     user_id = hash(user.username, os.environ.get('USER_ID_HASH_SECRET'))
     
-    if not user_db.fetch(user_id):
-        user.password_hash = auth_handler.get_password_hash(user.password)
-        user_db.add(
-            user_id,
-            user.dict(exclude = {'password'})
-        )
+    try : 
+        if not user_db.fetch(user_id):
+            user.id = user_id
+            user.password_hash = auth_handler.get_password_hash(user.password)
+            user_db.add(
+                user_id,
+                user.dict(exclude = {'password'})
+            )
+            
+            return {'status': 'success'}
+            
+        else :
+            return {'status': 'already exists'}
+    except :
+        return Response("Internal server error", status_code=500)
         
-        return {'status': 'success'}
         
-    else :
-        return {'status': 'already exists'}
-    
     
 @app.post("/login")
 async def login(user : User):
