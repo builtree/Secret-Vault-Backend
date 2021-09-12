@@ -12,7 +12,6 @@ user_db = Database(os.environ.get('DETA'), 'users')
 auth_handler = AuthHandler() 
 
 
-
 @app.post("/signup")
 async def signup(user : User):
     user_id = hash(user.username, os.environ.get('USER_ID_HASH_SECRET'))
@@ -32,7 +31,7 @@ async def signup(user : User):
                 }
             
         else :
-            return {'status': 'already exists'}
+            return Response("User already exists", status_code=401)
     except :
         return Response("Internal server error", status_code=500)
         
@@ -54,8 +53,9 @@ async def login(user : User):
             return {
                 'status': 'success',
                 'token' : token
-                }
-        return {'status': 'wrong password'}
-    
+                }    
+            
+        return Response("Failed login ", status_code=401)
+
     except :
-        return {'status': 'user not found'}
+        return Response("User not found", status_code=404)
