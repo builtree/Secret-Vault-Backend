@@ -5,6 +5,7 @@ from database.database import Database
 from helper.hashing import hash
 from helper.auth import AuthHandler
 from models.user import User 
+from helper.token_handler import generate_token, verify_token 
 
 app = FastAPI()
 user_db = Database(os.environ.get('DETA'), 'users')
@@ -24,8 +25,11 @@ async def signup(user : User):
                 user_id,
                 user.dict(exclude = {'password'})
             )
-            
-            return {'status': 'success'}
+            token = generate_token(user.username)
+            return {
+                'status': 'success',
+                'token' : token
+                }
             
         else :
             return {'status': 'already exists'}
@@ -46,7 +50,11 @@ async def login(user : User):
 
         
         if auth_handler.verify_password(user.password, user_from_db['value']['password_hash']):
-            return {'status': 'success'}
+            token = generate_token(user.username)
+            return {
+                'status': 'success',
+                'token' : token
+                }
         return {'status': 'wrong password'}
     
     except :
