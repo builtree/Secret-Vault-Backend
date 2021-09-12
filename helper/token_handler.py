@@ -2,7 +2,7 @@ import os
 import jwt 
 from datetime import datetime, timedelta
 
-def genrate_token(username, time_delta = timedelta(days=1)):
+def generate_token(username, time_delta = timedelta(days=1)):
     start_time = datetime.utcnow()
     end_time = start_time + time_delta
     token = {
