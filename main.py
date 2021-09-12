@@ -30,9 +30,6 @@ async def signup(user : User):
                 'token' : token
                 }
             
-            return Response("User created successfully", status_code=200)
-
-            
         else :
             return Response("User already exists", status_code=401)
     except :
@@ -52,9 +49,13 @@ async def login(user : User):
 
         
         if auth_handler.verify_password(user.password, user_from_db['value']['password_hash']):
-            return Response("login success", status_code=200)
-
+            token = generate_token(user.username)
+            return {
+                'status': 'success',
+                'token' : token
+                }    
+            
         return Response("Failed login ", status_code=401)
-   
+
     except :
         return Response("User not found", status_code=404)
