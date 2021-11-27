@@ -111,9 +111,15 @@ async def add_item(item : Item, request: Request):
     token = request.headers.get('token')
 
     if verify_token(item.username, token):
-        user_id = hash(item.username, os.environ.get('USER_ID_HASH_SECRET'))
+        # user_id = hash(item.username, os.environ.get('USER_ID_HASH_SECRET'))
         bucket_id = hash(item.username + '_' + item.bucket_name, os.environ.get('BUCKET_ID_HASH_SECRET'))
 
         bucket_from_db = bucket_db.fetch(bucket_id)
-        data = {''}
-        bucket_from_db['bucket_list'].append
+        data = {item.name : {
+            'item_name' : item.name,
+            'value' : item.value
+        }}
+
+        bucket_from_db['bucket_list'].update(data)
+
+        bucket_db.add(bucket_id, bucket_from_db)
