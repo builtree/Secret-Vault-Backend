@@ -16,9 +16,12 @@ class Database:
         self.name = db_name
         # self.db = db
     
-    def add(self,title, content):
+    def add(self,key, data):
+        data.update({
+            "key" : key
+        })
         # enc = self.fernet.encrypt(content.encode())
-        self.db.put({"key": title, "value" :content})
+        self.db.put(data)
     
     def fetch(self, item):
         
