@@ -6,6 +6,7 @@ from helper.hashing import hash
 from helper.auth import AuthHandler
 from models.user import User
 from models.bucket import Bucket
+from models.item import Item
 from helper.token_handler import generate_token, verify_token
 
 app = FastAPI()
@@ -89,7 +90,7 @@ async def add_bucket(bucket : Bucket, request: Request):
         bucket_data = {
             'bucket_name' : bucket.bucket_name,
             'user' : bucket.username,
-            'bucket_list' : []
+            'bucket_list' : {}
         }
 
         user_from_db = user_db.fetch(user_id)
@@ -105,4 +106,14 @@ async def add_bucket(bucket : Bucket, request: Request):
                 "username": bucket.username,
                 "token": token}
 
+@app.post("/add_item")
+async def add_item(item : Item, request: Request):
+    token = request.headers.get('token')
 
+    if verify_token(item.username, token):
+        user_id = hash(item.username, os.environ.get('USER_ID_HASH_SECRET'))
+        bucket_id = hash(item.username + '_' + item.bucket_name, os.environ.get('BUCKET_ID_HASH_SECRET'))
+
+        bucket_from_db = bucket_db.fetch(bucket_id)
+        data = {''}
+        bucket_from_db['bucket_list'].append
