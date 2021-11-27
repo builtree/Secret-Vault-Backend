@@ -66,11 +66,11 @@ async def get_buckets(username: str, request: Request):
 
     if verify_token(username, token):
         user_id = hash(username,
-                   os.environ.get('USER_ID_HASH_SECRET'))
+                       os.environ.get('USER_ID_HASH_SECRET'))
         try:
             user_from_db = user_db.fetch(user_id)
             bucket_list = user_from_db['bucket_list']
-            return {'buckets' : bucket_list}
+            return {'buckets': bucket_list}
 
         except:
             return Response("Something went wrong", status_code=401)
@@ -79,18 +79,19 @@ async def get_buckets(username: str, request: Request):
 
 
 @app.post("/add_bucket")
-async def add_bucket(bucket : Bucket, request: Request):
+async def add_bucket(bucket: Bucket, request: Request):
 
     token = request.headers.get('token')
 
     if verify_token(bucket.username, token):
         user_id = hash(bucket.username, os.environ.get('USER_ID_HASH_SECRET'))
-        bucket_id = hash(bucket.username + '_' + bucket.bucket_name, os.environ.get('BUCKET_ID_HASH_SECRET'))
+        bucket_id = hash(bucket.username + '_' + bucket.bucket_name,
+                         os.environ.get('BUCKET_ID_HASH_SECRET'))
 
         bucket_data = {
-            'bucket_name' : bucket.bucket_name,
-            'user' : bucket.username,
-            'bucket_list' : {}
+            'bucket_name': bucket.bucket_name,
+            'user': bucket.username,
+            'bucket_list': {}
         }
 
         user_from_db = user_db.fetch(user_id)
@@ -106,20 +107,39 @@ async def add_bucket(bucket : Bucket, request: Request):
                 "username": bucket.username,
                 "token": token}
 
+
 @app.post("/add_item")
-async def add_item(item : Item, request: Request):
+async def add_item(item: Item, request: Request):
     token = request.headers.get('token')
 
     if verify_token(item.username, token):
-        # user_id = hash(item.username, os.environ.get('USER_ID_HASH_SECRET'))
-        bucket_id = hash(item.username + '_' + item.bucket_name, os.environ.get('BUCKET_ID_HASH_SECRET'))
+        bucket_id = hash(item.username + '_' + item.bucket_name,
+                         os.environ.get('BUCKET_ID_HASH_SECRET'))
 
         bucket_from_db = bucket_db.fetch(bucket_id)
-        data = {item.name : {
-            'item_name' : item.name,
-            'value' : item.value
+        data = {item.name: {
+            'item_name': item.name,
+            'value': item.value
         }}
 
         bucket_from_db['bucket_list'].update(data)
 
         bucket_db.add(bucket_id, bucket_from_db)
+
+
+@app.get("/get_items/{username}/{bucket_name}")
+async def get_items(username: str, bucket_name: str, request: Request):
+    token = request.headers.get('token')
+
+    if verify_token(username, token):
+        bucket_id = hash(username + '_' + bucket_name,
+                         os.environ.get('BUCKET_ID_HASH_SECRET'))
+
+        bucket_from_db = bucket_db.fetch(bucket_id)
+
+        if bucket_from_db is None:
+            return Response("Bucket not found")
+
+        res = bucket_from_db['bucket_list']
+
+        return res
