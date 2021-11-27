@@ -19,6 +19,9 @@ def new_bucket(username, bucket_name):
     bucket_id = hash(username + '_' + bucket_name,
                      os.environ.get('BUCKET_ID_HASH_SECRET'))
 
+    user_from_db = (user_db.fetch(user_id))
+
+
     buckets = user_db.fetch(user_id)['bucket_list']
     buckets.append(bucket_name)
 

@@ -64,12 +64,17 @@ async def get_buckets(username: str, request: Request):
     token = request.headers.get('token')
 
     if verify_token(username, token):
-        return {"message": "verified"}
+        user_id = hash(username,
+                   os.environ.get('USER_ID_HASH_SECRET'))
+        try:
+            user_from_db = user_db.fetch(user_id)
+            bucket_list = user_from_db['bucket_list']
+            return {'buckets' : bucket_list}
 
+        except:
+            return Response("Something went wrong", status_code=401)
     else:
-        return {"message": "not verified",
-                "username": username,
-                "token": token}
+        return Response("Failed login", status_code=401)
 
 
 @app.post("/add_bucket")
